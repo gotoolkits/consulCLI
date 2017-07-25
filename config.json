@@ -1,0 +1,11 @@
+{
+    "consulapi":{
+         "address":"192.168.20.4:8500",
+         "scheme":"http"      
+    },
+    "catalog":{
+         "datacenter":"sh1a",
+         "address":"192.168.20.2",
+         "node":"MM-SH1A-20-02"
+    }
+}
