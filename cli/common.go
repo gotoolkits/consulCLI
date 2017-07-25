@@ -1,7 +1,6 @@
 package cli
 
 import (
-	//"fmt"
 	"os"
 
 	"strings"
@@ -15,11 +14,16 @@ func errCheck(err error, out string) {
 
 	errlog := logrus.WithFields(logrus.Fields{"err": err})
 	if err != nil {
-		//		fmt.Println(out)
 		errlog.Error(out)
 		os.Exit(1)
 	}
 }
+
+const (
+	DEFAULT_NODE       = "MM-CONSUL-NODE"
+	DEFAUTL_ADDRESS    = "192.168.100.254"
+	DEFAULT_DATACENTER = "sh1a"
+)
 
 var Config counsulApi.Config
 var Client *counsulApi.Client
@@ -34,10 +38,6 @@ func init() {
 	log.Out = os.Stdout
 
 	Config = newConfig()
-	// config := &counsulApi.Config{
-	// 	Address: "192.168.20.4:8500",
-	// 	Scheme:  "http",
-	// }
 
 	viper.SetConfigType("json")
 	viper.SetConfigName("config")
@@ -95,4 +95,24 @@ func newWriteOpt() counsulApi.WriteOptions {
 
 func newQueryOpt() counsulApi.QueryOptions {
 	return counsulApi.QueryOptions{}
+}
+
+func getDefaultNode() string {
+	if viper.IsSet("catalog.node") {
+		return viper.GetString("catalog.node")
+	}
+	return DEFAULT_NODE
+}
+func getDefaultAddr() string {
+	if viper.IsSet("catalog.address") {
+		return viper.GetString("catalog.address")
+	}
+	return DEFAUTL_ADDRESS
+}
+
+func getDefaultDC() string {
+	if viper.IsSet("catalog.datacenter") {
+		return viper.GetString("catalog.datacenter")
+	}
+	return DEFAULT_DATACENTER
 }

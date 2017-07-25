@@ -2,10 +2,9 @@ package cli
 
 import (
 	"strconv"
-	//counsulApi "github.com/hashicorp/consul/api"
 )
 
-func Add(record *string) {
+func Add(record *string, dnsNode *string) {
 
 	Srv := newService()
 	r := split(*record)
@@ -27,17 +26,21 @@ func Add(record *string) {
 	Srv.Tags = tags
 
 	ctReg := newReg()
-	ctReg.Datacenter = "sh1a"
-	ctReg.Node = "MM-SH1A-20-02"
-	ctReg.Address = "192.168.20.2"
+	ctReg.Datacenter = getDefaultDC()
+
+	ctReg.Address = getDefaultAddr()
 	ctReg.Service = &Srv
+
+	if *dnsNode != "" {
+		ctReg.Node = *dnsNode
+	} else {
+		ctReg.Node = getDefaultNode()
+	}
 
 	wm, err := Ctlog.Register(&ctReg, &wo)
 
 	errCheck(err, "Add service failed,Please check defined for the Catalogs !")
 
-	//errCheck(err, "Service Register err!")
-
-	log.Infoln("Service Register at: %v ", wm.RequestTime)
+	log.Infoln("(", Srv.Service, Srv.Address, Srv.Port, ctReg.Node, ctReg.Address, ctReg.Datacenter, ")", "Service Register spent time:", wm.RequestTime)
 
 }

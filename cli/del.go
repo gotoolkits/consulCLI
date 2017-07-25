@@ -2,32 +2,36 @@ package cli
 
 import (
 	"strconv"
-
-	counsulApi "github.com/hashicorp/consul/api"
 )
 
-func Del(record *string) {
+func Del(record *string, d *string) {
 
-	dereg := newDereg()
-	err := initDereg(&dereg, *record)
-	errCheck(err, "Init Catalog Deregistratation struct failed!")
+	drg := newDereg()
+
+	drg.Address = getDefaultAddr()
+	drg.CheckID = ""
+	drg.Datacenter = getDefaultDC()
+
+	if *d != "" {
+		drg.Node = *d
+	} else {
+		drg.Node = getDefaultNode()
+	}
+
+	if getSID(*record) == "" {
+
+		log.Warningln("Get Service ID is Null, Please Check the record !")
+
+	}
+	drg.ServiceID = getSID(*record)
 
 	wo := newWriteOpt()
-	_, err = Ctlog.Deregister(&dereg, &wo)
+
+	_, err := Ctlog.Deregister(&drg, &wo)
 	errCheck(err, "Deregistratation failed!")
 
-	log.Warningln("Delete service is finished!")
+	log.Infoln("(", drg.ServiceID, drg.Node, drg.Address, drg.Datacenter, ")", "Delete service is finished!")
 
-}
-
-func initDereg(drg *counsulApi.CatalogDeregistration, r string) error {
-	drg.Address = "192.168.20.2"
-	drg.CheckID = ""
-	drg.Datacenter = "sh1a"
-	drg.Node = "MM-SH1A-20-02"
-	drg.ServiceID = getSID(r)
-
-	return nil
 }
 
 func getSID(record string) string {

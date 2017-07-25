@@ -5,7 +5,7 @@
     },
     "catalog":{
          "datacenter":"sh1a",
-         "address":"192.168.20.2",
-         "node":"MM-SH1A-20-02"
+         "address":"192.168.100.254",
+         "node":"MM-CONSUL-NODE"
     }
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	//	counsulApi "github.com/hashicorp/consul/api"
 	"github.com/gotoolkits/consulCLI/cli"
 	"github.com/spf13/cobra"
 )
@@ -22,9 +21,7 @@ var RootCmd = &cobra.Command{
 	Long: `Consul-cli for console command tool, Add/List/Del service
 in Consul Servers Cluster.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Do Stuff Here
-		//RootCmd.Help()
-		//cli.Usage(cmd)
+
 		cmd.Usage()
 	},
 }
@@ -50,7 +47,7 @@ in Consul Servers Cluster.`,
 			cmd.Usage()
 		}
 
-		cli.Add(&dnsRecord)
+		cli.Add(&dnsRecord, &dnsNode)
 	},
 }
 
@@ -65,15 +62,16 @@ in Consul Servers Cluster.`,
 			cmd.Usage()
 		}
 
-		cli.Del(&dnsRecord)
+		cli.Del(&dnsRecord, &dnsNode)
 	},
 }
 
-var outType, dnsRecord string
+var outType, dnsRecord, dnsNode string
 
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&outType, "Out Type", "t", "shell", "Out type Json/shell")
 	RootCmd.PersistentFlags().StringVarP(&dnsRecord, "DNS record", "r", "", "ServiceName#ipaddress#port")
+	RootCmd.PersistentFlags().StringVarP(&dnsNode, "Cluster nodename", "n", "", "nodename for cluster")
 	RootCmd.AddCommand(ListCmd)
 	RootCmd.AddCommand(AddCmd)
 	RootCmd.AddCommand(DelCmd)
